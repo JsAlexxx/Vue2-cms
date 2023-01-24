@@ -1,0 +1,156 @@
+<template>
+  <div class="register-form-main">
+    <el-form
+      :model="registerForm"
+      :rules="rules"
+      ref="registerFormRef"
+      class="register-form"
+    >
+      <el-form-item prop="username">
+        <el-input
+          v-model="registerForm.username"
+          autocomplete="off"
+          placeholder="创建用户名"
+        >
+          <i slot="prefix" class="inner-icon el-icon-user"></i>
+          <el-tooltip
+            slot="suffix"
+            class="item"
+            effect="dark"
+            content="用户名"
+            placement="left"
+          >
+            <i class="inner-icon el-icon-question tip"></i>
+          </el-tooltip>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input
+          type="password"
+          v-model="registerForm.password"
+          autocomplete="off"
+          placeholder="创建密码"
+        >
+          <i slot="prefix" class="inner-icon el-icon-lock"></i>
+          <el-tooltip
+            slot="suffix"
+            class="item"
+            effect="dark"
+            content="密码"
+            placement="left"
+          >
+            <i class="inner-icon el-icon-question tip"></i>
+          </el-tooltip>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="passwordConfirm">
+        <el-input
+          type="password"
+          v-model="registerForm.passwordConfirm"
+          autocomplete="off"
+          placeholder="再次输入密码"
+        >
+          <i slot="prefix" class="inner-icon el-icon-lock"></i>
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          @click="submitForm('registerFormRef')"
+          class="submit-btn"
+          >注册</el-button
+        >
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import { checkUsername, checkPassword, passwordRegExp } from "./rules";
+
+export default {
+  data() {
+    const checkPasswordConfirm = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("请输入密码"));
+      } else if (!passwordRegExp.test(value) && value) {
+        callback(new Error("密码格式错误"));
+      } else if (
+        passwordRegExp.test(value) &&
+        value !== this.registerForm.password
+      ) {
+        callback(new Error("两次密码不一致"));
+      } else {
+        callback();
+      }
+    };
+    return {
+      registerForm: {
+        username: "",
+        password: "",
+        PasswordConfirm: "",
+      },
+      rules: {
+        username: [{ validator: checkUsername, trigger: "blur" }],
+        password: [{ validator: checkPassword, trigger: "blur" }],
+        PasswordConfirm: [{ validator: checkPasswordConfirm, trigger: "blur" }],
+      },
+    };
+  },
+  methods: {
+    submitForm(formEl) {
+      console.log(formEl);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.register-form-main {
+  width: 580px;
+  height: 390px;
+
+  .register-form {
+    .el-form-item {
+      height: 85px;
+      margin-bottom: 0;
+      .el-input {
+        ::v-deep .el-input__inner {
+          height: 60px;
+          padding-left: 45px;
+          border: none;
+          border-bottom: 1px solid $secondColor;
+          border-radius: 0;
+          font-size: 24px;
+          color: $secondColor;
+        }
+
+        .inner-icon {
+          width: 30px;
+          line-height: 60px;
+          font-size: 30px;
+          color: $primaryColor;
+
+          &.tip {
+            cursor: pointer;
+            color: $secondColor;
+          }
+        }
+      }
+
+      .submit-btn {
+        width: 390px;
+        height: 70px;
+        background-color: $primaryColor;
+        border-radius: 35px;
+        font-size: 24px;
+      }
+
+      &:last-of-type {
+        text-align: center;
+        margin-top: 35px;
+      }
+    }
+  }
+}
+</style>
